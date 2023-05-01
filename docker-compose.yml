@@ -4,11 +4,11 @@ services:
   db:
     image: postgres:13-alpine
     environment:
-      - POSTGRES_USER=superuser
-      - POSTGRES_PASSWORD=supersecret
-      - POSTGRES_DB=dbname
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
     volumes:
-      - /var/lib/postgresql/data
+      - ~/.postgres/project/users:/var/lib/postgresql/data
   app:
     build:
       context: .
