@@ -27,8 +27,8 @@ export default withAuth(
     session,
     server: {
       cors: {
-        origin: true,
-        credentials: true,
+        origin: false,
+        credentials: false,
       },
     },
     storage: {
