@@ -35,7 +35,7 @@ export default withAuth(
       image_storage: {
         kind: "local",
         type: "image",
-        generateUrl: (path) => `http://localhost:3000/images${path}`,
+        generateUrl: (path) => `/images${path}`,
         serverRoute: {
           path: "/images",
         },
