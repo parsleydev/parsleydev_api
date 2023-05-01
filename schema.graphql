@@ -8,11 +8,28 @@ type User {
   password: PasswordState
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  image: ImageFieldOutput
   createdAt: DateTime
 }
 
 type PasswordState {
   isSet: Boolean!
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -106,6 +123,7 @@ input UserUpdateInput {
   email: String
   password: String
   posts: PostRelateToManyForUpdateInput
+  image: ImageFieldInput
   createdAt: DateTime
 }
 
@@ -115,6 +133,13 @@ input PostRelateToManyForUpdateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
 }
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
@@ -126,6 +151,7 @@ input UserCreateInput {
   email: String
   password: String
   posts: PostRelateToManyForCreateInput
+  image: ImageFieldInput
   createdAt: DateTime
 }
 
@@ -134,9 +160,59 @@ input PostRelateToManyForCreateInput {
   connect: [PostWhereUniqueInput!]
 }
 
+type Service {
+  id: ID!
+  title: String
+  description: String
+  link: String
+  image: ImageFieldOutput
+}
+
+input ServiceWhereUniqueInput {
+  id: ID
+}
+
+input ServiceWhereInput {
+  AND: [ServiceWhereInput!]
+  OR: [ServiceWhereInput!]
+  NOT: [ServiceWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  description: StringFilter
+  link: StringFilter
+}
+
+input ServiceOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  description: OrderDirection
+  link: OrderDirection
+}
+
+input ServiceUpdateInput {
+  title: String
+  description: String
+  link: String
+  image: ImageFieldInput
+}
+
+input ServiceUpdateArgs {
+  where: ServiceWhereUniqueInput!
+  data: ServiceUpdateInput!
+}
+
+input ServiceCreateInput {
+  title: String
+  description: String
+  link: String
+  image: ImageFieldInput
+}
+
 type Post {
   id: ID!
   title: String
+  cover: ImageFieldOutput
+  description: String
   content: Post_content_Document
   author: User
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
@@ -157,6 +233,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
+  description: StringFilter
   author: UserWhereInput
   tags: TagManyRelationFilter
 }
@@ -170,10 +247,13 @@ input TagManyRelationFilter {
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
+  description: OrderDirection
 }
 
 input PostUpdateInput {
   title: String
+  cover: ImageFieldInput
+  description: String
   content: JSON
   author: UserRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -199,6 +279,8 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
+  cover: ImageFieldInput
+  description: String
   content: JSON
   author: UserRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
@@ -266,6 +348,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createService(data: ServiceCreateInput!): Service
+  createServices(data: [ServiceCreateInput!]!): [Service]
+  updateService(where: ServiceWhereUniqueInput!, data: ServiceUpdateInput!): Service
+  updateServices(data: [ServiceUpdateArgs!]!): [Service]
+  deleteService(where: ServiceWhereUniqueInput!): Service
+  deleteServices(where: [ServiceWhereUniqueInput!]!): [Service]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
@@ -304,6 +392,9 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  services(where: ServiceWhereInput! = {}, orderBy: [ServiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ServiceWhereUniqueInput): [Service!]
+  service(where: ServiceWhereUniqueInput!): Service
+  servicesCount(where: ServiceWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int

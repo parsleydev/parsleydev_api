@@ -31,5 +31,23 @@ export default withAuth(
         credentials: true,
       },
     },
+    storage: {
+      image_storage: {
+        kind: "local",
+        type: "image",
+        generateUrl: (path) => `http://localhost:3000/images${path}`,
+        serverRoute: {
+          path: "/images",
+        },
+        storagePath: "public/images",
+      },
+
+      // this is the path to the directory where uploaded files will be stored
+      //   if you want to store them somewhere else, you can change this value
+      //   see https://keystonejs.com/docs/apis/config#storage-api
+      //   for more information
+      // NOTE: this path must exist before you run `keystone-next dev` or `keystone-next start`
+      //   if it doesn't exist, you'll get an error
+    },
   })
 );
