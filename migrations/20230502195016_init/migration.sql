@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL DEFAULT '',
     "email" TEXT NOT NULL DEFAULT '',
     "password" TEXT NOT NULL,
@@ -9,12 +9,14 @@ CREATE TABLE "User" (
     "image_width" INTEGER,
     "image_height" INTEGER,
     "image_id" TEXT,
-    "createdAt" DATETIME DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Service" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL DEFAULT '',
     "description" TEXT NOT NULL DEFAULT '',
     "link" TEXT NOT NULL DEFAULT '',
@@ -22,12 +24,14 @@ CREATE TABLE "Service" (
     "image_extension" TEXT,
     "image_width" INTEGER,
     "image_height" INTEGER,
-    "image_id" TEXT
+    "image_id" TEXT,
+
+    CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Post" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL DEFAULT '',
     "cover_filesize" INTEGER,
     "cover_extension" TEXT,
@@ -35,23 +39,24 @@ CREATE TABLE "Post" (
     "cover_height" INTEGER,
     "cover_id" TEXT,
     "description" TEXT NOT NULL DEFAULT '',
-    "content" TEXT NOT NULL DEFAULT '[{"type":"paragraph","children":[{"text":""}]}]',
+    "content" JSONB NOT NULL DEFAULT '[{"type":"paragraph","children":[{"text":""}]}]',
     "author" TEXT,
-    CONSTRAINT "Post_author_fkey" FOREIGN KEY ("author") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Tag" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT NOT NULL DEFAULT ''
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "_Post_tags" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-    CONSTRAINT "_Post_tags_A_fkey" FOREIGN KEY ("A") REFERENCES "Post" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "_Post_tags_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -65,3 +70,12 @@ CREATE UNIQUE INDEX "_Post_tags_AB_unique" ON "_Post_tags"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_Post_tags_B_index" ON "_Post_tags"("B");
+
+-- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_author_fkey" FOREIGN KEY ("author") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_Post_tags" ADD CONSTRAINT "_Post_tags_A_fkey" FOREIGN KEY ("A") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_Post_tags" ADD CONSTRAINT "_Post_tags_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;

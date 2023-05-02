@@ -4,18 +4,28 @@ services:
   db:
     image: postgres:13-alpine
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - ~/.postgres/project/users:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - default
+
   app:
     build:
       context: .
-
+    depends_on:
+      - db
     restart: on-failure
+    networks:
+      - default
     ports:
       - 3000:3000
+    env_file:
+      - .env
     volumes:
       - ./src:/app/src
       - ./keystone.ts:/app/keystone.ts

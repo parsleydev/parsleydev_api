@@ -4,7 +4,7 @@
 //
 // Keystone imports the default export of this file, expecting a Keystone configuration object
 //   you can find out more at https://keystonejs.com/docs/apis/config
-
+import "dotenv/config";
 import { config } from "@keystone-6/core";
 
 // to keep this file tidy, we define our schema in a different file
@@ -21,7 +21,7 @@ export default withAuth(
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: "postgresql",
-      url: process.env.DATABASE_URL || "postgres://localhost:5432/keystone",
+      url: `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/${process.env.POSTGRES_DB}`,
     },
     lists,
     session,
