@@ -21,14 +21,13 @@ export default withAuth(
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: "postgresql",
-      url: `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/${process.env.POSTGRES_DB}`,
+      url: process.env.DATABASE_URL || `postgres://localhost:5432/keystone`,
     },
     lists,
     session,
     server: {
       cors: {
-        origin: false,
-        credentials: false,
+        origin: "*",
       },
     },
     storage: {
